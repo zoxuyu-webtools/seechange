@@ -15,8 +15,30 @@ seeChange.callback = function (scid, cb, cbdist) {
   zahl1 = 0;
   zahl2 = 0;
   ergebnis = 0;
+  reloads = 0;
+  last_stop = -1;
 
   verify.addEventListener("click", function sett (e) {
+    reloads += 1
+    if(reloads > 5) {
+      if(last_stop != -1) {
+        now_stop = Date.now();
+        if(now_stop - last_stop > 4000) {
+          last_stop = -1;
+          reloads = 0;
+        } else {
+          sc.innerHTML = "<h1 style='font-family: Arial; font-size: 25px; margin-bottom: 10px; padding-bottom: 5px; margin-top: 0; border-bottom: 1px solid #ddd;'>seeChange Schutz</h1><p style='margin: 5px 0; font-family: Arial; font-size: 14px; color: red;font-weight: bold;'>Bitte haben Sie noch einen Moment Geduld.</p><p style='margin: 5px 0; font-family: Arial; font-size: 14px;'>Sie haben zu oft ein neues Rätsel angefordert. Bitte versuchen Sie es in vier Sekunden erneut.</p><div data-sc-id='reload' style='font-family: Arial; font-size: 20px; padding: 10px; cursor: pointer; background-color: #eea; max-width: 200px; text-align: center; margin: 2px auto;'>Nochmal versuchen</div>";
+          sc.querySelector('[data-sc-id="reload"]').addEventListener("click", sett);
+          last_stop =  Date.now();
+          return;
+        }
+      } else {
+        last_stop = Date.now();
+        sc.innerHTML = "<h1 style='font-family: Arial; font-size: 25px; margin-bottom: 10px; padding-bottom: 5px; margin-top: 0; border-bottom: 1px solid #ddd;'>seeChange Schutz</h1><p style='margin: 5px 0; font-family: Arial; font-size: 14px;'>Sie haben zu oft ein neues Rätsel angefordert. Bitte versuchen Sie es in vier Sekunden erneut.</p><div data-sc-id='reload' style='font-family: Arial; font-size: 20px; padding: 10px; cursor: pointer; background-color: #eea; max-width: 200px; text-align: center; margin: 2px auto;'>Nochmal versuchen</div>";
+        sc.querySelector('[data-sc-id="reload"]').addEventListener("click", sett);
+        return;
+      }
+    }
     zahlen = ["null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwölf"];
     x1 = Math.floor(Math.random() * zahlen.length);
     x2 = Math.floor(Math.random() * zahlen.length)
